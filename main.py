@@ -1,29 +1,25 @@
-import random
-import time
+import discord
 
+intents = discord.Intents.default()
+intents.message_content = True
 
-eng_words = ['Hi','Bye','Task', 'Programm']
-tr_words = ['Merhaba','Hoşça kalın','Görev', 'Program']
-score = 0
+client = discord.Client(intents=intents)
 
-mode = input("Bir mod seçin: Yeni kelimeler eklemek için 0, çeviri yapmak için 1: \n")
-while ((mode != '0') and (mode != '1')):
-    mode = input("Geçersiz sembol! Sadece 0 veya 1 yazın (Yeni kelimeler eklemek için 0, çeviri yapmak için 1) \n")
+@client.event
+async def on_ready():
+    print(f'{client.user} olarak giriş yaptık')
 
-if mode == "1":
-    print("Çevirebildiğiniz kadar kelime çevirin! 10 hakkınız var!")
-    for i in range(10):
-        number = random.randint(0, len(eng_words)-1)
-        print("Tercümesi bu şekilde olmalı: " + eng_words[number])
-        if input() == tr_words[number]:
-            print("Harika!!!")
-            score += 1
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    if message.content.startswith('$hello'):
+        await message.channel.send(f'Merhaba {client.user}! ben bir botum!')
+    elif  message.content.startswith('$heh'):
+        if len(message.content) > 4:
+            count_heh = int(message.content[4:])
         else:
-            print("Bir yanlışlık var... Doğru kelime - " + eng_words[number])
-else:
-    word = input("İngilizce bir kelime yazın: ")
-    translate = input("Kelimenin tercümesini yazın: ")
-    if len(word) > 0 and len(translate) > 0:
-        eng_words.append(word)
-        tr_words.append(translate)
-        print("Kelime başarıyla eklendi!")
+            count_heh = 5
+        await message.channel.send("he" * count_heh)
+        
+client.run("GİZLİ TOKEN BURAYA")
